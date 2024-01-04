@@ -5,9 +5,14 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    name: 'email_address',
+    nullable: false,
+  })
   account: string;
 
-  @Column()
+  @Column({
+    nullable: false,
+  })
   password: string;
 }
