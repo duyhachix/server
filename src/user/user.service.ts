@@ -26,20 +26,66 @@ export class UserService {
     });
     return this.userRepository.save(newUser);
   }
-  // async findOne(username: string): Promise<User | undefined> {
-  //   return this.userRepository.findOne({ username });
-  // }
-  updateUser(id: number, updateUserDetails: UpdateUserParams) {
-    return this.userRepository.update({ id }, { ...updateUserDetails });
+
+  /**
+   * update new details
+   * @param id: user id
+   * @param updateUserDetails: new user details
+   * @returns: status message
+   */
+  async updateUser(id: number, updateUserDetails: UpdateUserParams) {
+    // return this.userRepository.update({ id }, { ...updateUserDetails });
+    try {
+      const result = await this.userRepository.update(
+        { id },
+        { ...updateUserDetails },
+      );
+      console.log('update result', result);
+      if (result.affected === 0) {
+        throw new Error('User not found or no changes applied');
+      }
+
+      return { message: 'User updated successfully' };
+    } catch (error) {
+      console.error('Error updating user:', error.message);
+      throw error;
+    }
   }
-  deleteUser(id: number) {
-    this.userRepository.delete({ id });
-    return { message: 'User deleted successfully' };
+
+  /**
+   * Delete a user from the database
+   * @param id : user id
+   * @returns : status message
+   */
+  async deleteUser(id: number) {
+    try {
+      const result = await this.userRepository.delete({ id });
+      console.log('delete result', result);
+      if (!result) {
+        throw new Error('User not found');
+      }
+
+      return { message: 'User deleted successfully' };
+    } catch (error) {
+      console.error('Error deleting user:', error.message);
+      throw error;
+    }
   }
-  findUserByParams(params: string) {
+
+  async findUserByParams(params: string) {
     // return a user with email
-    return this.userRepository.findOne({
-      where: { email: params },
-    });
+    try {
+      const user = await this.userRepository.findOne({
+        where: { email: params },
+      });
+      if (!user) {
+        throw new Error('User not found'); // Hoặc bạn có thể sử dụng một loại exception khác phù hợp với ứng dụng của bạn
+      }
+
+      return user;
+    } catch (error) {
+      console.error('Error finding user by params:', error.message);
+      throw error;
+    }
   }
 }
