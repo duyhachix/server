@@ -65,4 +65,14 @@ export class UserController {
   findUserByParams(@Param('params') params: string) {
     return this.userService.findUserByParams(params);
   }
+
+  @Post('login')
+  async login(@Body() loginInfo: { email: string; password: string }) {
+    console.log('loginInfo', loginInfo);
+
+    return this.userService.findUserByEmailAndPassword(
+      loginInfo.email,
+      loginInfo.password,
+    );
+  }
 }

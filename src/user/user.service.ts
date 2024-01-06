@@ -40,7 +40,6 @@ export class UserService {
         { id },
         { ...updateUserDetails },
       );
-      console.log('update result', result);
       if (result.affected === 0) {
         throw new Error('User not found or no changes applied');
       }
@@ -85,6 +84,22 @@ export class UserService {
       return user;
     } catch (error) {
       console.error('Error finding user by params:', error.message);
+      throw error;
+    }
+  }
+
+  async findUserByEmailAndPassword(email: string, password: string) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { email: email, password: password },
+      });
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      return user;
+    } catch (error) {
+      console.error('Error finding user by email and password:', error.message);
       throw error;
     }
   }
