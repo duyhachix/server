@@ -32,6 +32,12 @@
 $ npm install
 ```
 
+## Database creation
+```
+$ mysql -u root -p
+$ create database nest_login;  
+```
+
 ## Running the app
 
 ```bash
