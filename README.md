@@ -26,7 +26,7 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-#This server used with #login_app repository 
+#This server used with #login_app(https://github.com/duyhachix/login_app) repository 
 
 ## Installation
 
