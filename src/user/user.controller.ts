@@ -25,7 +25,7 @@ export class UserController {
    */
   @Get('')
   async getUsers(): Promise<User[]> {
-    const users = this.userService.getUsers();
+    const users = await this.userService.getUsers();
     return users;
   }
 
@@ -34,9 +34,14 @@ export class UserController {
    * @param createUserDto
    * @returns a new user details
    */
-  @Post('create-user')
+  @Post('sign-up')
   async CreateUserDto(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+    const content = await this.userService.createUser(createUserDto);
+
+    return {
+      message: `User ${content.email} created successfully`,
+      content,
+    };
   }
 
   /**
@@ -49,7 +54,11 @@ export class UserController {
     @Param('id') id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    await this.userService.updateUser(id, updateUserDto);
+    const content = await this.userService.updateUser(id, updateUserDto);
+    return {
+      message: 'User updated successfully',
+      content,
+    };
   }
 
   /**
@@ -57,20 +66,25 @@ export class UserController {
    * @param id : user id
    */
   @Delete(':id')
-  deleteUserById(@Param('id', ParseIntPipe) id: number) {
-    this.userService.deleteUser(id);
+  async deleteUserById(@Param('id', ParseIntPipe) id: number) {
+    await this.userService.deleteUser(id);
+    return { message: 'User deleted successfully' };
   }
 
   @Get(':params')
-  findUserByParams(@Param('params') params: string) {
-    return this.userService.findUserByParams(params);
+  async findUserByParams(@Param('params') params: string) {
+    return await this.userService.findUserByParams(params);
   }
 
   @Post('login')
   async login(@Body() loginInfo: { email: string; password: string }) {
-    return this.userService.findUserByEmailAndPassword(
+    const content = await this.userService.findUserByEmailAndPassword(
       loginInfo.email,
       loginInfo.password,
     );
+    return {
+      message: 'Login successful',
+      content,
+    };
   }
 }

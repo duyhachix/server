@@ -12,7 +12,7 @@ export class UserService {
   ) {}
 
   async getUsers(): Promise<User[]> {
-    return this.userRepository.find();
+    return await this.userRepository.find();
   }
 
   /**
@@ -20,11 +20,11 @@ export class UserService {
    * @param userDetails : new user details
    * @returns response
    */
-  createUser(userDetails: CreateUserParams) {
+  async createUser(userDetails: CreateUserParams) {
     const newUser = this.userRepository.create({
       ...userDetails,
     });
-    return this.userRepository.save(newUser);
+    return await this.userRepository.save(newUser);
   }
 
   /**
@@ -95,7 +95,6 @@ export class UserService {
       if (!user) {
         throw new Error('User not found');
       }
-
       return user;
     } catch (error) {
       console.error('Error finding user by email and password:', error.message);
