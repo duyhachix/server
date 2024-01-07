@@ -48,6 +48,7 @@ export class UserController {
    * Updates a user details
    * @param id: user id
    * @param updateUserDto
+   * @returns status message and updated details
    */
   @Put(':id')
   async updateUserById(
@@ -55,6 +56,11 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     const content = await this.userService.updateUser(id, updateUserDto);
+    if (!content) {
+      return {
+        message: 'User not found or no changes applied',
+      };
+    }
     return {
       message: 'User updated successfully',
       content,
@@ -64,6 +70,7 @@ export class UserController {
   /**
    * Delete a user from the database
    * @param id : user id
+   * @returns : status message
    */
   @Delete(':id')
   async deleteUserById(@Param('id', ParseIntPipe) id: number) {
@@ -76,12 +83,23 @@ export class UserController {
     return await this.userService.findUserByParams(params);
   }
 
+  /**
+   * Login a user
+   * @param loginInfo: user email and password
+   * @returns user details
+   */
   @Post('login')
   async login(@Body() loginInfo: { email: string; password: string }) {
     const content = await this.userService.findUserByEmailAndPassword(
       loginInfo.email,
       loginInfo.password,
     );
+
+    if (!content) {
+      return {
+        message: 'User not found',
+      };
+    }
     return {
       message: 'Login successful',
       content,
