@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // internal modules
 import { UserModule } from './user/user.module';
-import { User } from './user/user.entity';
 
 @Module({
   imports: [

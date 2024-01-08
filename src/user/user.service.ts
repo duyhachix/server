@@ -16,7 +16,7 @@ export class UserService {
   }
 
   /**
-   * create new user api
+   * TODO : create new user api
    * @param userDetails : new user details
    * @returns response
    */
@@ -70,6 +70,11 @@ export class UserService {
     }
   }
 
+  /**
+   * TODO: find a user by param
+   * @param params : user details
+   * @returns : matched user and message
+   */
   async findUserByParams(params: string) {
     // return a user with email
     try {
@@ -87,6 +92,12 @@ export class UserService {
     }
   }
 
+  /**
+   * TODO : find user by email and password
+   * @param email : email address value
+   * @param password : password value
+   * @returns matched user and message
+   */
   async findUserByEmailAndPassword(email: string, password: string) {
     try {
       const user = await this.userRepository.findOne({
