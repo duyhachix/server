@@ -1,7 +1,11 @@
+// standard libraries
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
+// external libraries
+import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
+// internal libraries
+import { User } from './user.entity';
 import { CreateUserParams, UpdateUserParams } from '../utils/types';
 
 @Injectable()
@@ -24,6 +28,11 @@ export class UserService {
     const newUser = this.userRepository.create({
       ...userDetails,
     });
+    // hash password
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(newUser.password, salt);
+    newUser.password = hashPassword;
+
     return await this.userRepository.save(newUser);
   }
 
