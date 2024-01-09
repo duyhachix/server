@@ -1,9 +1,10 @@
 // standard libraries
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // external libraries
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
 // internal libraries
 import { User } from './user.entity';
 import { CreateUserParams, UpdateUserParams } from '../utils/types';
@@ -12,7 +13,8 @@ import { CreateUserParams, UpdateUserParams } from '../utils/types';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private userRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
   async getUsers(): Promise<User[]> {
@@ -113,9 +115,12 @@ export class UserService {
         where: { email: email, password: password },
       });
       if (!user) {
-        throw new Error('User not found');
+        throw new UnauthorizedException();
       }
-      return user;
+
+      const payload = { sub: user.id, email: user.email };
+      const access_token = await this.jwtService.signAsync(payload);
+      return { access_token };
     } catch (error) {
       console.error('Error finding user by email and password:', error.message);
       throw error;
